@@ -32,7 +32,7 @@ class VehicleSelectionWidget extends StatelessWidget {
       ),
       width: ScreenUtil().setWidth(100),
       height: ScreenUtil().setHeight(90),
-      decoration: BoxDecoration(
+            decoration: BoxDecoration(
         color: selected ? selectedColor : unselectedColor,
         borderRadius: BorderRadius.circular(
           ScreenUtil().setWidth(15),
@@ -46,19 +46,20 @@ class VehicleSelectionWidget extends StatelessWidget {
         ],
       ),
       child: Column(
+        // mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
             children: <Widget>[
               Text(
-                '$vehicle',
+                vehicle,
                 style: TextStyle(
                   color: (selected) ? Colors.white : Colors.black,
                   fontSize: FontSize.fontSize14,
                 ),
               ),
-              Expanded(child: SizedBox()),
+              // Expanded(child: SizedBox()),
               if (selected) ...[
                 Icon(
                   Icons.check_circle,
@@ -69,12 +70,13 @@ class VehicleSelectionWidget extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: ScreenUtil().setHeight(20),
+            height: ScreenUtil().setHeight(12),
           ),
-          Image.asset(
-            image,
-            fit: BoxFit.cover,
-          ),
+          Image.network(image)
+          // Image(
+          //   image: NetworkImage(image),
+          //   fit: BoxFit.cover,
+          // )
         ],
       ),
     );

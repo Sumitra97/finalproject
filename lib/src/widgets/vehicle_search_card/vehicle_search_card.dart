@@ -37,7 +37,7 @@ class VehicleSearchCard extends StatelessWidget {
         right: ScreenUtil().setWidth(5),
         bottom: ScreenUtil().setHeight(10),
       ),
-      height: ScreenUtil().setHeight(100),
+      height: ScreenUtil().setHeight(124),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

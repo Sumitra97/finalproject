@@ -35,11 +35,7 @@ class LocationWidget extends StatelessWidget {
                 ScreenUtil().setWidth(10),
               ),
               image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(
-                  image,
-                ),
-              ),
+                  fit: BoxFit.cover, image: NetworkImage(image)),
             ),
           ),
           Container(
@@ -58,7 +54,7 @@ class LocationWidget extends StatelessWidget {
               ),
               alignment: Alignment.bottomLeft,
               child: Text(
-                '$city',
+                city,
                 style: TextStyle(
                   fontSize: FontSize.fontSize14,
                   color: Colors.white,

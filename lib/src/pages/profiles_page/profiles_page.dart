@@ -103,7 +103,7 @@ class _ProfilesPageState extends State<ProfilesPage>
             ),
           ),
           Container(
-            height: ScreenUtil().setHeight(382.5),
+            height: MediaQuery.of(context).size.height*.55,
             child: TabBarView(
               controller: controller,
               children: <Widget>[

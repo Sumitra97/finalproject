@@ -22,6 +22,7 @@ class SaawariTextField extends StatelessWidget {
       ),
       key: key,
       keyboardType: keyboardType,
+      
       validator: validator,
       obscureText: obscureText,
       cursorColor: Colors.white,

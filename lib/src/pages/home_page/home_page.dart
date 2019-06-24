@@ -1,7 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sawari/src/assets/assets.dart';
-import 'package:sawari/src/assets/cities.dart';
 import 'package:sawari/src/widgets/app_drawer/app_drawer.dart';
 import 'package:sawari/src/widgets/location_widget/location_widget.dart';
 import 'package:sawari/src/widgets/logo/logo.dart';
@@ -70,27 +71,45 @@ class HomePage extends StatelessWidget {
             SizedBox(height: ScreenUtil().setHeight(15)),
             Expanded(
               child: Container(
-                child: GridView.builder(
-                  physics: BouncingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 5 / 4,
-                  ),
-                  itemCount: 8,
-                  itemBuilder: (context, index) {
-                    return LocationWidget(
-                      city: Cities.names[index],
-                      image: Cities.cityImages[Cities.names[index]],
-                      tapHandler: tap,
-                    );
-                  },
-                ),
+                child: FutureBuilder(
+                    future: getCity(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<List> snapshot) {
+                      if (!snapshot.hasData)
+                        return Center(child: CircularProgressIndicator());
+
+                      List cities = snapshot.data;
+
+                      return GridView.builder(
+                          physics: BouncingScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 5 / 4,
+                          ),
+                          itemCount: cities.length,
+                          itemBuilder: (context, index) {
+                            var city = cities[index];
+                            return LocationWidget(
+                              city: city["name"],
+                              image: city['city_image'],
+                              tapHandler: tap,
+                            );
+                          });
+                    }),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<List> getCity() async {
+    http.Response res =
+        await http.get('http://sawaari97.pythonanywhere.com/api/city/');
+    print(res.body);
+    return json.decode(res.body);
   }
 
   void tap(String city) {
