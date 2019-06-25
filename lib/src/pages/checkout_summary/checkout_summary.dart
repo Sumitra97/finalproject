@@ -2,10 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sawari/src/assets/assets.dart';
 import 'package:sawari/src/widgets/card_widget/card-widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CheckoutSummary extends StatelessWidget {
+class CheckoutSummary extends StatefulWidget {
+  @override
+  _CheckoutSummaryState createState() => _CheckoutSummaryState();
+}
+
+class _CheckoutSummaryState extends State<CheckoutSummary> {
+  String vehicleName = "";
+  String goodsAndServicesTax = "";
+  String vehicleRefundableDeposit = "";
+  String vehicleTotalCosts = "";
+  String vehicleConsumption = "";
+  String vehichleTotalHours = "";
+
+  String dropOffDate = "";
+  String dropOffTime = "";
+
+  String pickUpDate = "";
+  String pickUpTime = "";
+
+
   @override
   Widget build(BuildContext context) {
+    
+    _getVehicleSharedPreferences() async {
+      final prefs = await SharedPreferences.getInstance();
+
+      vehicleName = prefs.getString("vehicle_name");
+      goodsAndServicesTax = prefs.getString("vehicle_goods_services");
+      vehicleRefundableDeposit = prefs.getString("vehicle_refundable_deposit");
+      vehicleConsumption = prefs.getString("vehicle_consumption");
+      vehicleTotalCosts = prefs.getString("vehicle_total_cost");
+
+
+      dropOffDate = prefs.getString("drop_off_date");
+      dropOffTime = prefs.getString("drop_off_time");
+
+      pickUpDate = prefs.getString("pick_up_date");
+      pickUpTime = prefs.getString("pick_up_time");
+
+      vehichleTotalHours = prefs.getString("hours_rented");
+    }
+
+    
+    _getVehicleSharedPreferences().then((value){
+      setState((){});
+    });
+  
     ScreenUtil.instance = ScreenUtil(
       width: ScreenSize.screenWidth,
       height: ScreenSize.screenHeight,
@@ -82,10 +127,10 @@ class CheckoutSummary extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Type: Car'),
-                              Text('Total Fee: Nrs. 8000'),
-                              Text('Consumption: 24 Ltr/Km'),
-                              Text('4 day(s)'),
+                              Text('Name: ' + vehicleName),
+                              Text('Cost: Nrs. ' + vehicleTotalCosts),
+                              Text('Consumption: ' + vehicleConsumption),
+                              Text(vehichleTotalHours + ' hour(s)'),
                             ],
                           ),
                         ),
@@ -95,7 +140,7 @@ class CheckoutSummary extends StatelessWidget {
                 ),
               ),
               CardWidget(
-                height: ScreenUtil().setHeight(130),
+                height: ScreenUtil().setHeight(160),
                 width: ScreenUtil().setWidth(340),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -148,7 +193,7 @@ class CheckoutSummary extends StatelessWidget {
                           width: ScreenUtil().setWidth(100),
                           height: ScreenUtil().setHeight(20),
                           child: Text(
-                            '7:00 AM',
+                            pickUpTime,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -158,7 +203,7 @@ class CheckoutSummary extends StatelessWidget {
                           width: ScreenUtil().setWidth(100),
                           height: ScreenUtil().setHeight(20),
                           child: Text(
-                            '12:00 AM',
+                            pickUpTime,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -173,7 +218,7 @@ class CheckoutSummary extends StatelessWidget {
                           width: ScreenUtil().setWidth(100),
                           height: ScreenUtil().setHeight(20),
                           child: Text(
-                            '24 Jan, 2019',
+                              pickUpDate,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -183,7 +228,7 @@ class CheckoutSummary extends StatelessWidget {
                           width: ScreenUtil().setWidth(100),
                           height: ScreenUtil().setHeight(20),
                           child: Text(
-                            '24 Feb, 2019',
+                            dropOffDate,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -218,7 +263,7 @@ class CheckoutSummary extends StatelessWidget {
                 ),
               ),
               CardWidget(
-                height: ScreenUtil().setHeight(90),
+                height: ScreenUtil().setHeight(120),
                 width: ScreenUtil().setWidth(340),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -315,7 +360,7 @@ class CheckoutSummary extends StatelessWidget {
                 ),
               ),
               CardWidget(
-                height: ScreenUtil().setHeight(170),
+                height: ScreenUtil().setHeight(250),
                 width: ScreenUtil().setWidth(340),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -336,7 +381,7 @@ class CheckoutSummary extends StatelessWidget {
                       height: ScreenUtil().setHeight(10),
                     ),
                     Text(
-                      '4 day(s)',
+                      vehichleTotalHours + " hour(s)",
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: FontSize.fontSize14,
@@ -364,7 +409,7 @@ class CheckoutSummary extends StatelessWidget {
                         Container(
                           width: ScreenUtil().setWidth(100),
                           child: Text(
-                            'NRs. 6000',
+                            'NRs. ' + vehicleTotalCosts,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -390,7 +435,7 @@ class CheckoutSummary extends StatelessWidget {
                         Container(
                           width: ScreenUtil().setWidth(100),
                           child: Text(
-                            'NRs. 1200',
+                            'NRs. ' + goodsAndServicesTax,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -416,7 +461,7 @@ class CheckoutSummary extends StatelessWidget {
                         Container(
                           width: ScreenUtil().setWidth(100),
                           child: Text(
-                            'NRs. 200',
+                            'NRs. ' + vehicleRefundableDeposit,
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -426,29 +471,6 @@ class CheckoutSummary extends StatelessWidget {
                     ),
                     SizedBox(
                       height: ScreenUtil().setHeight(5),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          width: ScreenUtil().setWidth(100),
-                          child: Text(
-                            'Playable Amount',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: ScreenUtil().setWidth(100),
-                          child: Text(
-                            'NRs. 4000',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                     SizedBox(
                       height: ScreenUtil().setHeight(5),
@@ -468,7 +490,7 @@ class CheckoutSummary extends StatelessWidget {
                         Container(
                           width: ScreenUtil().setWidth(100),
                           child: Text(
-                            'NRs. 4000',
+                            'NRs. ' + vehicleTotalCosts,
                             style: TextStyle(
                               color: Colors.black,
                             ),

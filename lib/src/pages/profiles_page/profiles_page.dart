@@ -25,6 +25,12 @@ class _ProfilesPageState extends State<ProfilesPage>
     super.dispose();
   }
 
+  bool liscenceFrontSubmitted = false;
+  bool liscenceBackSubmitted = false;
+
+  bool citizenshipFrontSubmitted = false;
+  bool citizenshipBackSubmitted = false;
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(
@@ -32,6 +38,16 @@ class _ProfilesPageState extends State<ProfilesPage>
       height: ScreenSize.screenHeight,
       allowFontScaling: true,
     )..init(context);
+
+    _showCheckout() {
+      if (liscenceFrontSubmitted &&
+          liscenceFrontSubmitted &&
+          citizenshipBackSubmitted &&
+          citizenshipFrontSubmitted) {
+        return true;
+      }
+      return false;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -206,69 +222,98 @@ class _ProfilesPageState extends State<ProfilesPage>
                       ScreenUtil().setWidth(10),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Driving License'),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(15),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            ImageSelectionWidget(
-                              title: 'Front View',
-                              imageTitle: 'driving_license_front',
-                            ),
-                            ImageSelectionWidget(
-                              title: 'Back View',
-                              imageTitle: 'driving_license_back',
-                            ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Driving License'),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(15),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              ImageSelectionWidget(
+                                title: 'Front View',
+                                imageTitle: 'driving_license_front',
+                                isSet: (value) {
+                                  setState(() {
+                                    if (value) {
+                                      liscenceFrontSubmitted = true;
+                                    }
+                                  });
+                                },
+                              ),
+                              ImageSelectionWidget(
+                                title: 'Back View',
+                                imageTitle: 'driving_license_back',
+                                isSet: (value) {
+                                  setState(() {
+                                    if (value) {
+                                      liscenceBackSubmitted = true;
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(20),
+                          ),
+                          Text('Citizenship Certificate'),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(15),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              ImageSelectionWidget(
+                                  title: 'Front View',
+                                  imageTitle: 'citizen_ship_front',
+                                  isSet: (value) {
+                                    setState(() {
+                                      if (value) {
+                                        citizenshipFrontSubmitted = true;
+                                      }
+                                    });
+                                  }),
+                              ImageSelectionWidget(
+                                  title: 'Back View',
+                                  imageTitle: 'citizen_ship_back',
+                                  isSet: (value) {
+                                    setState(() {
+                                      if (value) {
+                                        citizenshipBackSubmitted = true;
+                                      }
+                                    });
+                                  }),
+                            ],
+                          ),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(15),
+                          ),
+                          if (_showCheckout()) ...[
+                            Center(
+                              child: SizedBox(
+                                  width: double.infinity,
+                                  height: 40,
+                                  child: RaisedButton.icon(
+                                      icon: Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamed(
+                                            AppRoutes.CHECKOUT_SUMMARY);
+                                      },
+                                      label: Text(
+                                        "Go to checkout",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      color: Colors.deepPurpleAccent[400])),
+                            )
                           ],
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(20),
-                        ),
-                        Text('Citizenship Certificate'),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(15),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            ImageSelectionWidget(
-                              title: 'Front View',
-                              imageTitle: 'citizen_ship_front',
-                            ),
-                            ImageSelectionWidget(
-                              title: 'Back View',
-                              imageTitle: 'citizen_ship_back',
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Center(
-                          child: SizedBox(
-                              width: double.infinity,
-                              height: 40,
-                              child: RaisedButton.icon(
-                                  icon: Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(AppRoutes.CHECKOUT_SUMMARY);
-                                  },
-                                  label: Text(
-                                    "Go to checkout",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  color: Colors.deepPurpleAccent[400])),
-                        )
-                      ],
-                    ),
+                        ]),
                   ),
                 )
               ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sawari/src/assets/assets.dart';
 import 'package:sawari/src/widgets/sawaari_table_row/saawari_table_row.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VehicleSearchCard extends StatelessWidget {
   final String image;
@@ -49,6 +50,9 @@ class VehicleSearchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Store all data in shared preferences
+    _storeVehicleDataInSharedPreferences();
+
     ScreenUtil.instance = ScreenUtil(
       width: ScreenSize.screenWidth,
       height: ScreenSize.screenHeight,
@@ -289,5 +293,19 @@ class VehicleSearchCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _storeVehicleDataInSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString("vehicle_name", name);
+    prefs.setString(
+        "vehicle_goods_services", _getGoodsAndServicesTax().toInt().toString());
+    prefs.setString(
+        "vehicle_refundable_deposit", _getRefundableDeposit().toInt().toString());
+    prefs.setString("vehicle_total_cost", _getPayableAmount().toInt().toString());
+    prefs.setString("vehicle_consumption", consumption.toInt().toString());
+    prefs.setString("vehicle_total_hours", hours.toString());
+    prefs.setString("vehicle_rent",_getPayableAmount().toInt().toString());
   }
 }

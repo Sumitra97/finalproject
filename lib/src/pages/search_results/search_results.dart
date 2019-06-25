@@ -7,6 +7,7 @@ import 'package:sawari/src/widgets/booking_not_complete/booking_not_complete.dar
 import 'package:sawari/src/widgets/logo/logo.dart';
 import 'package:sawari/src/widgets/vehicle_search_card/vehicle_search_card.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchResultsPage extends StatefulWidget {
   @override
@@ -14,8 +15,15 @@ class SearchResultsPage extends StatefulWidget {
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
+
+  int hoursRented = 0;
+
   @override
   Widget build(BuildContext context) {
+
+    setState(() {
+     _getHoursRentedData(); 
+    });
     _getVehicleInformation();
     ScreenUtil.instance = ScreenUtil(
       width: ScreenSize.screenWidth,
@@ -89,6 +97,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     http.Response res =
         await http.get('http://sawariapi.nepsify.com/api/vehic_type/');
     print(res.body);
+
     return json.decode(res.body);
+  }
+
+  _getHoursRentedData() async{
+    
+    final prefs = await SharedPreferences.getInstance();
+    hoursRented = int.parse(prefs.getString("hours_rented"));
+    return hoursRented;
   }
 }
