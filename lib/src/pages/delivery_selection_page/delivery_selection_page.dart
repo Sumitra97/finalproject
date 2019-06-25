@@ -21,6 +21,14 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
 
   List<Marker> _mapMarkers = [];
 
+  /* Places List */
+  List<String> kathamnduList = ["Kapan", "Baneshwor"];
+  List<String> pokharaList = ["Lakeside"];
+  List<String> chitwanList = ["NawalParasi", "Sauraha"];
+
+  List<String> pickUpList;
+  List<String> dropOffList;
+
   //Color
   List<Color> _buttonBackgroundColorsList = [
     Colors.deepPurpleAccent[400],
@@ -124,64 +132,84 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
 
     final String pickupCity = ModalRoute.of(context).settings.arguments;
 
-    return  SelectionScaffold(
-        city: pickupCity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'How would you like your vehicle?',
-              style: TextStyle(
-                fontSize: FontSize.fontSize18,
+    if (pickupCity == "Kathmandu, Nepal") {
+      pickUpList = kathamnduList;
+    } else if (pickupCity == "Chitwan, Nepal") {
+      pickUpList = chitwanList;
+    } else if (pickupCity == "Pokhara, Nepal") {
+      pickUpList = pokharaList;
+    } else {
+      pickUpList = kathamnduList;
+    }
+
+    if (pickupCity == "Kathmandu") {
+      dropOffList = kathamnduList;
+    } else if (pickupCity == "Chitwan") {
+      dropOffList = chitwanList;
+    } else if (pickupCity == "Pokhara") {
+      dropOffList = pokharaList;
+    } else {
+      dropOffList = kathamnduList;
+    }
+
+    return SelectionScaffold(
+      city: pickupCity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'How would you like your vehicle?',
+            style: TextStyle(
+              fontSize: FontSize.fontSize18,
+            ),
+          ),
+          SizedBox(
+            height: ScreenUtil().setHeight(10),
+          ),
+          Text(
+            'Note: * Delivery will cost you more based on your location from the nearest showroom.',
+            style: TextStyle(
+              fontSize: FontSize.fontSize12,
+              color: Colors.black26,
+            ),
+          ),
+          SizedBox(
+            height: ScreenUtil().setHeight(10),
+          ),
+          Container(
+            child: TabBar(
+              labelPadding: EdgeInsets.symmetric(
+                vertical: ScreenUtil().setHeight(10),
+                horizontal: ScreenUtil().setWidth(10),
               ),
-            ),
-            SizedBox(
-              height: ScreenUtil().setHeight(10),
-            ),
-            Text(
-              'Note: * Delivery will cost you more based on your location from the nearest showroom.',
-              style: TextStyle(
-                fontSize: FontSize.fontSize12,
-                color: Colors.black26,
-              ),
-            ),
-            SizedBox(
-              height: ScreenUtil().setHeight(10),
-            ),
-            Container(
-              child: TabBar(
-                labelPadding: EdgeInsets.symmetric(
-                  vertical: ScreenUtil().setHeight(10),
-                  horizontal: ScreenUtil().setWidth(10),
-                ),
-                labelColor: Colors.black54,
-                unselectedLabelColor: Colors.black38,
-                controller: tabController,
-                indicatorColor: Color(AppColors.PURPLE),
-                tabs: <Widget>[
-                  Text(
-                    'Goto Showroom',
-                    style: TextStyle(
-                      fontSize: FontSize.fontSize16,
-                    ),
+              labelColor: Colors.black54,
+              unselectedLabelColor: Colors.black38,
+              controller: tabController,
+              indicatorColor: Color(AppColors.PURPLE),
+              tabs: <Widget>[
+                Text(
+                  'Goto Showroom',
+                  style: TextStyle(
+                    fontSize: FontSize.fontSize16,
                   ),
-                  Text(
-                    'Delivery',
-                    style: TextStyle(
-                      fontSize: FontSize.fontSize16,
-                    ),
-                  )
-                ],
-              ),
+                ),
+                Text(
+                  'Delivery',
+                  style: TextStyle(
+                    fontSize: FontSize.fontSize16,
+                  ),
+                )
+              ],
             ),
-            Container(
-              height: ScreenUtil().setHeight(360),
-              child: TabBarView(
-                controller: tabController,
-                children: <Widget>[
-                  Container(
-                    child: SingleChildScrollView(
+          ),
+          Container(
+            height: ScreenUtil().setHeight(360),
+            child: TabBarView(
+              controller: tabController,
+              children: <Widget>[
+                Container(
+                  child: SingleChildScrollView(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,20 +240,12 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
                                 buttonShows = true;
                               });
                             },
-                            items: [
-                              DropdownMenuItem(
-                                value: 'Option A',
-                                child: Text(
-                                  'Option A',
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Option B',
-                                child: Text(
-                                  'Option B',
-                                ),
-                              ),
-                            ],
+                            items: pickUpList.map((String location) {
+                              return DropdownMenuItem(
+                                value: location,
+                                child: Text(location),
+                              );
+                            }).toList(),
                           ),
                           SizedBox(
                             height: ScreenUtil().setHeight(30),
@@ -288,20 +308,12 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
                                   buttonShows = true;
                                 });
                               },
-                              items: [
-                                DropdownMenuItem(
-                                  value: 'Option A',
-                                  child: Text(
-                                    'Option A',
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'Option B',
-                                  child: Text(
-                                    'Option B',
-                                  ),
-                                ),
-                              ],
+                              items: dropOffList.map((String location) {
+                                return DropdownMenuItem(
+                                  value: location,
+                                  child: Text(location),
+                                );
+                              }).toList(),
                             ),
                             SizedBox(
                               height: ScreenUtil().setHeight(30),
@@ -333,77 +345,76 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
                             ),
                           ],
                         ]),
-                  ),),
-                  Stack(
-                    children: <Widget>[
-                      FlutterMap(
-                        options: new MapOptions(
-                          center: new LatLng(27.7083355, 85.3131555),
-                          zoom: 13.0,
-                          onTap: (LatLng point) {
-                            _handleTap(point, context);
+                  ),
+                ),
+                Stack(
+                  children: <Widget>[
+                    FlutterMap(
+                      options: new MapOptions(
+                        center: new LatLng(27.7083355, 85.3131555),
+                        zoom: 13.0,
+                        onTap: (LatLng point) {
+                          _handleTap(point, context);
+                        },
+                      ),
+                      layers: [
+                        new TileLayerOptions(
+                          urlTemplate: "https://api.tiles.mapbox.com/v4/"
+                              "{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}",
+                          additionalOptions: {
+                            'accessToken':
+                                'pk.eyJ1IjoiY2hlZW5hIiwiYSI6ImNqeGJybnhkOTA0Yjgzb2xlbDR4cHltOXoifQ.FsoA7drMITgYoFrhAnLtQw',
+                            'id': 'mapbox.streets',
                           },
                         ),
-                        layers: [
-                          new TileLayerOptions(
-                            urlTemplate: "https://api.tiles.mapbox.com/v4/"
-                                "{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}",
-                            additionalOptions: {
-                              'accessToken':
-                                  'pk.eyJ1IjoiY2hlZW5hIiwiYSI6ImNqeGJybnhkOTA0Yjgzb2xlbDR4cHltOXoifQ.FsoA7drMITgYoFrhAnLtQw',
-                              'id': 'mapbox.streets',
-                            },
-                          ),
-                          new MarkerLayerOptions(
-                            markers: _mapMarkers,
-                          ),
-                        ],
-                      ),
-                      Container(
-                        child: Center(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: 40,
-                              child: RaisedButton.icon(
-                                  icon: Icon(
-                                    _buttonIconList[_tapCount],
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_tapCount == 3) {
-                                        Navigator.of(context).pushNamed(
-                                          AppRoutes.SEARCH_RESULTS_PAGE,
-                                        );
-                                        _saveLatLngData();
-                                      }
-                                      if (_tapCount != 3) {
-                                        _tapCount++;
-                                      }
-                                      print(_tapCount);
-                                    });
-                                  },
-                                  label: Text(
-                                    _textList[_tapCount],
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  color:
-                                      _buttonBackgroundColorsList[_tapCount]),
-                            ),
+                        new MarkerLayerOptions(
+                          markers: _mapMarkers,
+                        ),
+                      ],
+                    ),
+                    Container(
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 40,
+                            child: RaisedButton.icon(
+                                icon: Icon(
+                                  _buttonIconList[_tapCount],
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    if (_tapCount == 3) {
+                                      Navigator.of(context).pushNamed(
+                                        AppRoutes.SEARCH_RESULTS_PAGE,
+                                      );
+                                      _saveLatLngData();
+                                    }
+                                    if (_tapCount != 3) {
+                                      _tapCount++;
+                                    }
+                                    print(_tapCount);
+                                  });
+                                },
+                                label: Text(
+                                  _textList[_tapCount],
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                color: _buttonBackgroundColorsList[_tapCount]),
                           ),
                         ),
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      )
-                    ],
-                  ),
-                ],
-              ),
+                      ),
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    )
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-      
+          ),
+        ],
+      ),
     );
   }
 

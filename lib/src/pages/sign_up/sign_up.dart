@@ -163,7 +163,7 @@ class _SignUpState extends State<SignUp> {
                                 print('trying to signup');
                                 //sending post req to api and waiting for response
                                 Response response = await post(
-                                    "http://192.168.1.75:8000/api/customer/",
+                                    "http://sawariapi.nepsify.com/api/customer/",
                                     body: body);
 
                                 //for stoping circulaarprocessindicator

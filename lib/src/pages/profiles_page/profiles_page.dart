@@ -247,20 +247,26 @@ class _ProfilesPageState extends State<ProfilesPage>
                             ),
                           ],
                         ),
+                        SizedBox(height: 20),
                         Center(
-                            child: RaisedButton.icon(
-                                icon: Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  setState(() {});
-                                },
-                                label: Text(
-                                  "Go to checkout",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                color: Colors.deepPurpleAccent[400]))
+                          child: SizedBox(
+                              width: double.infinity,
+                              height: 40,
+                              child: RaisedButton.icon(
+                                  icon: Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamed(AppRoutes.CHECKOUT_SUMMARY);
+                                  },
+                                  label: Text(
+                                    "Go to checkout",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  color: Colors.deepPurpleAccent[400])),
+                        )
                       ],
                     ),
                   ),
