@@ -17,10 +17,13 @@ class ImageSelectionWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ImageSelectionWidgetState createState() => _ImageSelectionWidgetState();
+  _ImageSelectionWidgetState createState() => _ImageSelectionWidgetState(title);
 }
 
 class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
+  String title;
+
+  _ImageSelectionWidgetState(this.title);
   SharedPreferences preferences;
   File _image;
 
@@ -90,7 +93,7 @@ class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
                     Icons.file_upload,
                     color: Colors.black,
                   ),
-                  Text('Front View'),
+                  Text(title),
                 ]
               : [],
         ),

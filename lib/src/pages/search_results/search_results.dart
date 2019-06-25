@@ -58,7 +58,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
 
             return ListView.builder(
               physics: BouncingScrollPhysics(),
-              itemCount: 3,
+              itemCount: vehicles.length,
               itemBuilder: (context, index) {
                 var vehicle = vehicles[index];
                 return VehicleSearchCard(

@@ -103,7 +103,7 @@ class _ProfilesPageState extends State<ProfilesPage>
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height*.55,
+            height: MediaQuery.of(context).size.height * .55,
             child: TabBarView(
               controller: controller,
               children: <Widget>[
@@ -200,55 +200,71 @@ class _ProfilesPageState extends State<ProfilesPage>
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(
-                    ScreenUtil().setWidth(10),
+                SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(
+                      ScreenUtil().setWidth(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Driving License'),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(15),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            ImageSelectionWidget(
+                              title: 'Front View',
+                              imageTitle: 'driving_license_front',
+                            ),
+                            ImageSelectionWidget(
+                              title: 'Back View',
+                              imageTitle: 'driving_license_back',
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(20),
+                        ),
+                        Text('Citizenship Certificate'),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(15),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            ImageSelectionWidget(
+                              title: 'Front View',
+                              imageTitle: 'citizen_ship_front',
+                            ),
+                            ImageSelectionWidget(
+                              title: 'Back View',
+                              imageTitle: 'citizen_ship_back',
+                            ),
+                          ],
+                        ),
+                        Center(
+                            child: RaisedButton.icon(
+                                icon: Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  setState(() {});
+                                },
+                                label: Text(
+                                  "Go to checkout",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                color: Colors.deepPurpleAccent[400]))
+                      ],
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Driving License'),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(15),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          ImageSelectionWidget(
-                            title: 'Front View',
-                            imageTitle: 'driving_license_front',
-                          ),
-                          ImageSelectionWidget(
-                            title: 'Back View',
-                            imageTitle: 'driving_license_back',
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(20),
-                      ),
-                      Text('Citizenship Certificate'),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(15),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          ImageSelectionWidget(
-                            title: 'Front View',
-                            imageTitle: 'citizen_ship_front',
-                          ),
-                          ImageSelectionWidget(
-                            title: 'Back View',
-                            imageTitle: 'citizen_ship_back',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                )
               ],
             ),
           ),

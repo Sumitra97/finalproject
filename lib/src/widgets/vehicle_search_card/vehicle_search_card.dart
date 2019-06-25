@@ -172,20 +172,24 @@ class VehicleSearchCard extends StatelessWidget {
                                   sawaariTableRow(
                                     title: 'Total Rent*',
                                     value:
-                                        (_getTotalPrice(price, hours).toInt()).toString(),
+                                        (_getTotalPrice(price, hours).toInt())
+                                            .toString(),
                                   ),
                                   sawaariTableRow(
                                     title: 'Goods and Services Tax',
-                                    value: (_getGoodsAndServicesTax().toInt()).toString(),
+                                    value: (_getGoodsAndServicesTax().toInt())
+                                        .toString(),
                                   ),
                                   sawaariTableRow(
                                     title: 'Refundable Deposit',
-                                    value: (_getRefundableDeposit().toInt()).toString(),
+                                    value: (_getRefundableDeposit().toInt())
+                                        .toString(),
                                   ),
                                   sawaariTableRow(
                                     title:
                                         'Total Paying Amount (Inc. Refundable Deposit)',
-                                    value: (_getPayableAmount().toInt()).toString(),
+                                    value: (_getPayableAmount().toInt())
+                                        .toString(),
                                   ),
                                 ],
                               ),
@@ -194,7 +198,10 @@ class VehicleSearchCard extends StatelessWidget {
                               ),
                               Center(
                                 child: RaisedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamed(AppRoutes.PROFILE);
+                                  },
                                   color: Color(AppColors.GREEN),
                                   child: Text(
                                     'Book Now',
