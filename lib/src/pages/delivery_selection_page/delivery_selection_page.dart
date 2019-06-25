@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong/latlong.dart';
 import 'package:location/location.dart';
 import 'package:sawari/src/assets/assets.dart';
 import 'package:sawari/src/widgets/selection_scaffold/selection_scaffold.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeliverySelectionPage extends StatefulWidget {
   @override
@@ -14,9 +16,43 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
     with SingleTickerProviderStateMixin {
   TabController tabController;
 
+  //Tap Count
+  int _tapCount = 0;
+
+  List<Marker> _mapMarkers = [];
+
+  //Color
+  List<Color> _buttonBackgroundColorsList = [
+    Colors.deepPurpleAccent[400],
+    Colors.indigo,
+    Colors.green,
+  ];
+
+  //Icon
+  List<IconData> _buttonIconList = [
+    Icons.arrow_upward,
+    Icons.arrow_downward,
+    Icons.thumb_up,
+  ];
+
+  //Text
+  List<String> _textList = [
+    "Pick up location",
+    "Drop off location",
+    "Confirm",
+  ];
+
+  List<LatLng> _pickUpDropOffLatLngList = [];
+
   String selectedPickupAddress;
   String selectedDropOffCity;
   String selectedDropOffAddress;
+
+  // Switch
+  bool _dropOffOnAnotherCitySwitch = false;
+
+  void _dropOffOnChanged(bool value) =>
+      setState(() => _dropOffOnAnotherCitySwitch = value);
 
   @override
   void initState() {
@@ -32,6 +68,50 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
   void dispose() {
     tabController.dispose();
     super.dispose();
+  }
+
+  _handleTap(LatLng point, BuildContext context) {
+    setState(() {
+      if (_tapCount <= 1) {
+        //Only once per button click
+        try {
+          _mapMarkers.removeAt(_tapCount);
+        } catch (e) {
+          print(e.toString());
+        }
+
+        _pickUpDropOffLatLngList.insert(_tapCount, point);
+        _mapMarkers.insert(
+            _tapCount,
+            Marker(
+              width: 80.0,
+              height: 80.0,
+              point: point,
+              builder: (ctx) => new Container(
+                    child: Icon(
+                      Icons.location_on,
+                      color: _buttonBackgroundColorsList[0],
+                      size: 40.0,
+                    ),
+                  ),
+            ));
+      }
+    });
+  }
+
+  _saveLatLngData() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString(
+        "pickUpLatLng",
+        (_pickUpDropOffLatLngList[0].latitude).toString() +
+            "," +
+            (_pickUpDropOffLatLngList[1].longitude).toString());
+    prefs.setString(
+        "dropOffLatLng",
+        (_pickUpDropOffLatLngList[0].latitude).toString() +
+            "," +
+            (_pickUpDropOffLatLngList[1].longitude).toString());
   }
 
   @override
@@ -148,61 +228,75 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
                       SizedBox(
                         height: ScreenUtil().setHeight(30),
                       ),
-                      Text(
-                        'Drop off',
-                        style: TextStyle(
-                          fontSize: FontSize.fontSize12,
-                          color: Colors.black38,
-                        ),
+                      new Column(
+                        children: <Widget>[
+                          new SwitchListTile(
+                            value: _dropOffOnAnotherCitySwitch,
+                            onChanged: _dropOffOnChanged,
+                            title: new Text('Drop off in another city.',
+                                style: new TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red)),
+                          )
+                        ],
                       ),
-                      DropdownButtonFormField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.location_on),
+                      if (_dropOffOnAnotherCitySwitch) ...[
+                        Text(
+                          'Drop off',
+                          style: TextStyle(
+                            fontSize: FontSize.fontSize12,
+                            color: Colors.black38,
+                          ),
                         ),
-                        hint: Text('Select City'),
-                        value: selectedDropOffCity,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDropOffCity = value;
-                          });
-                        },
-                        items: [
-                          for (int i = 0; i < Cities.names.length; i++) ...[
+                        DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.location_on),
+                          ),
+                          hint: Text('Select City'),
+                          value: selectedDropOffCity,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDropOffCity = value;
+                            });
+                          },
+                          items: [
+                            for (int i = 0; i < Cities.names.length; i++) ...[
+                              DropdownMenuItem(
+                                value: Cities.names[i],
+                                child: Text(
+                                  Cities.names[i],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        DropdownButtonFormField(
+                          hint: Text('Select Address'),
+                          value: selectedDropOffAddress,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDropOffAddress = value;
+                            });
+                          },
+                          items: [
                             DropdownMenuItem(
-                              value: Cities.names[i],
+                              value: 'Option A',
                               child: Text(
-                                Cities.names[i],
+                                'Option A',
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Option B',
+                              child: Text(
+                                'Option B',
                               ),
                             ),
                           ],
-                        ],
-                      ),
-                      DropdownButtonFormField(
-                        hint: Text('Select Address'),
-                        value: selectedPickupAddress,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPickupAddress = value;
-                          });
-                        },
-                        items: [
-                          DropdownMenuItem(
-                            value: 'Option A',
-                            child: Text(
-                              'Option A',
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Option B',
-                            child: Text(
-                              'Option B',
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(30),
-                      ),
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(30),
+                        ),
+                      ],
                       Center(
                         child: RaisedButton(
                           onPressed: () {
@@ -229,13 +323,69 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
                     ],
                   ),
                 ),
-                GoogleMap(
-                    onMapCreated: (controller) => onMapCreated(controller),
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(0, 0),
-                      zoom: 6,
+                Stack(
+                  children: <Widget>[
+                    FlutterMap(
+                      options: new MapOptions(
+                        center: new LatLng(27.7083355, 85.3131555),
+                        zoom: 13.0,
+                        onTap: (LatLng point) {
+                          _handleTap(point, context);
+                        },
+                      ),
+                      layers: [
+                        new TileLayerOptions(
+                          urlTemplate: "https://api.tiles.mapbox.com/v4/"
+                              "{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}",
+                          additionalOptions: {
+                            'accessToken':
+                                'pk.eyJ1IjoiY2hlZW5hIiwiYSI6ImNqeGJybnhkOTA0Yjgzb2xlbDR4cHltOXoifQ.FsoA7drMITgYoFrhAnLtQw',
+                            'id': 'mapbox.streets',
+                          },
+                        ),
+                        new MarkerLayerOptions(
+                          markers: _mapMarkers,
+                        ),
+                      ],
                     ),
-                    markers: Set<Marker>.of(markers)),
+                    Container(
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 40,
+                            child: RaisedButton.icon(
+                                icon: Icon(
+                                  _buttonIconList[_tapCount],
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    if (_tapCount == 3) {
+                                      Navigator.of(context).pushNamed(
+                                        AppRoutes.SEARCH_RESULTS_PAGE,
+                                      );
+                                      _saveLatLngData();
+                                    }
+                                    if (_tapCount != 3) {
+                                      _tapCount++;
+                                    }
+                                    print(_tapCount);
+                                  });
+                                },
+                                label: Text(
+                                  _textList[_tapCount],
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                color: _buttonBackgroundColorsList[_tapCount]),
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
@@ -244,33 +394,33 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
     );
   }
 
-  List<Marker> markers = [];
-  GoogleMapController controller;
-  LatLng currentLocation;
+  // List<Marker> markers = [];
+  // // GoogleMapController controller;
+  // LatLng currentLocation;
 
-  onMapCreated(GoogleMapController controller) async {
-    this.controller = controller;
-    var locationData = await Location().getLocation();
-    currentLocation = LatLng(locationData.latitude, locationData.longitude);
-    print(locationData.longitude);
-    print(locationData.latitude);
-    setState(() {
-      markers.add(
-        Marker(
-            markerId: MarkerId("Mylocation"),
-            position: currentLocation,
-            draggable: true,
-            onTap: () {
-              print("tapped");
-            },
-            consumeTapEvents: true,
-            infoWindow: InfoWindow(title: "Your location")),
-      );
-    });
+  // onMapCreated(GoogleMapController controller) async {
+  //   this.controller = controller;
+  //   var locationData = await Location().getLocation();
+  //   currentLocation = LatLng(locationData.latitude, locationData.longitude);
+  //   print(locationData.longitude);
+  //   print(locationData.latitude);
+  //   setState(() {
+  //     markers.add(
+  //       Marker(
+  //           markerId: MarkerId("Mylocation"),
+  //           position: currentLocation,
+  //           draggable: true,
+  //           onTap: () {
+  //             print("tapped");
+  //           },
+  //           consumeTapEvents: true,
+  //           infoWindow: InfoWindow(title: "Your location")),
+  //     );
+  //   });
 
-    controller.animateCamera(CameraUpdate.newLatLngZoom(currentLocation, 7));
-  }
-}
+  // controller.animateCamera(CameraUpdate.newLatLngZoom(currentLocation, 7));
+//   }
+// }
 
 // class Maps extends StatefulWidget {
 //   @override
@@ -328,3 +478,4 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
 //     );
 //   }
 // }
+}

@@ -31,7 +31,7 @@ class VehicleSelectionWidget extends StatelessWidget {
         ScreenUtil().setWidth(15),
       ),
       width: ScreenUtil().setWidth(100),
-      height: ScreenUtil().setHeight(90),
+      height: ScreenUtil().setHeight(40),
             decoration: BoxDecoration(
         color: selected ? selectedColor : unselectedColor,
         borderRadius: BorderRadius.circular(

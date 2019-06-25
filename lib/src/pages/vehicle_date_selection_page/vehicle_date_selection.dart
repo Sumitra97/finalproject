@@ -8,6 +8,7 @@ import 'package:sawari/src/widgets/date_time_selected_card/date_time_selected_ca
 import 'package:sawari/src/widgets/date_time_selection_card.dart/date_time_selection.dart';
 import 'package:sawari/src/widgets/selection_scaffold/selection_scaffold.dart';
 import 'package:sawari/src/widgets/vehicle_selection_widget/vehicle_selection_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VehicleDateSelectionpage extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
   String selectedVechile;
   Future<List> getVechiles() async {
     http.Response res =
-        await http.get('http://sawaari97.pythonanywhere.com/api/vehic_cat/');
+        await http.get('http://sawariapi.nepsify.com/api/vehic_cat/');
     // print(res.body);
     return json.decode(res.body);
   }
@@ -55,13 +56,14 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
               ),
             ),
             SizedBox(
-              height: ScreenUtil().setHeight(10),
+              height: ScreenUtil().setHeight(20),
             ),
             Flexible(
               flex: 3,
               fit: FlexFit.tight,
               child: FutureBuilder(
                 future: getVechiles(),
+  
                 builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
                   if (!snapshot.hasData)
                     return Center(child: CircularProgressIndicator());
@@ -77,7 +79,6 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
                               setState(() {
                                 selection = getVehicleType(vechile["name"]);
                                 selectedVechile = vechile["name"];
-                                print(selectedVechile);
                               });
                             },
                             child: VehicleSelectionWidget(
@@ -146,6 +147,7 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
                 ],
               ],
             ),
+            if(pickupTimeSelected && dropOffTimeSelected) ...[
             // SizedBox(height: ScreenUtil().setHeight(100)),
             Center(
               child: RaisedButton(
@@ -153,7 +155,9 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
                   Navigator.of(context).pushNamed(
                     AppRoutes.DELIVERY_SELECTION_PAGE,
                     arguments: city,
+                    
                   );
+                  _storeSelectedViechleToSharedPreferences(selectedVechile);
                 },
                 color: Colors.lime,
                 child: Padding(
@@ -170,7 +174,7 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
                   ),
                 ),
               ),
-            ),
+            ),]
           ],
         ),
       
@@ -194,6 +198,27 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
     dropOffDate = data['date'];
     setState(() {});
   }
+
+   _storeSelectedViechleToSharedPreferences(selectedVehicle) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int vehicleId;
+
+    switch (selectedVehicle) {
+    case "Car":
+      vehicleId = 1;
+      break;
+    case "Bike":
+      vehicleId = 2;
+      break;
+    case "Scooter":
+      vehicleId = 3;
+      break;
+    }
+
+    prefs.setInt("vehicle_type_id", vehicleId);
+    print(prefs.getInt("vehicle_type_id"));
+  }
 }
 
 getVehicleType(String type) {
@@ -205,6 +230,8 @@ getVehicleType(String type) {
     case "Scooter":
       return Vehicle.SCOOTER;
   }
+
+ 
 }
 
 enum Vehicle { CAR, BIKE, SCOOTER }

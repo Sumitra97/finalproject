@@ -6,10 +6,10 @@ import 'package:sawari/src/widgets/sawaari_table_row/saawari_table_row.dart';
 class VehicleSearchCard extends StatelessWidget {
   final String image;
   final String name;
-  final String price;
+  final int price;
   final double consumption;
   final Function book;
-  final int days;
+  final int hours;
 
   const VehicleSearchCard({
     Key key,
@@ -17,9 +17,35 @@ class VehicleSearchCard extends StatelessWidget {
     @required this.price,
     @required this.consumption,
     @required this.image,
-    @required this.days,
+    @required this.hours,
     this.book,
   }) : super(key: key);
+
+  _convertHoursIntoDays(hours) {
+    return hours / 24;
+  }
+
+  _getTotalPrice(price, hours) {
+    return price * hours;
+  }
+
+  double _getGoodsAndServicesTax() {
+    return _getTotalPrice(price, hours) * 0.13;
+  }
+
+  double _getRefundableDeposit() {
+    return _getTotalPrice(price, hours) * 0.5;
+  }
+
+  double _getPayableAmount() {
+    return _getTotalPrice(price, hours) +
+        _getGoodsAndServicesTax() +
+        _getRefundableDeposit();
+  }
+
+  String removeDecimalZeroFormat(double n) {
+    return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +54,8 @@ class VehicleSearchCard extends StatelessWidget {
       height: ScreenSize.screenHeight,
       allowFontScaling: true,
     )..init(context);
+
+    double days = _convertHoursIntoDays(this.hours);
 
     return Container(
       padding: EdgeInsets.all(ScreenUtil().setWidth(5)),
@@ -100,7 +128,7 @@ class VehicleSearchCard extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: ScreenUtil().setHeight(5)),
-                              Image.asset(
+                              Image.network(
                                 image,
                                 width: ScreenUtil().setWidth(200),
                                 height: ScreenUtil().setHeight(100),
@@ -119,7 +147,10 @@ class VehicleSearchCard extends StatelessWidget {
                               ),
                               SizedBox(height: ScreenUtil().setHeight(10)),
                               Text(
-                                '$days day(s)',
+                                hours.toString() +
+                                    "hour(s) - " +
+                                    days.toString() +
+                                    'day(s)',
                                 style: TextStyle(
                                   fontSize: FontSize.fontSize14,
                                 ),
@@ -140,28 +171,21 @@ class VehicleSearchCard extends StatelessWidget {
                                 children: [
                                   sawaariTableRow(
                                     title: 'Total Rent*',
-                                    value: '6000',
+                                    value:
+                                        (_getTotalPrice(price, hours).toInt()).toString(),
                                   ),
                                   sawaariTableRow(
                                     title: 'Goods and Services Tax',
-                                    value: '6000',
-                                  ),
-                                  sawaariTableRow(
-                                    title: 'Discount',
-                                    value: '6000',
+                                    value: (_getGoodsAndServicesTax().toInt()).toString(),
                                   ),
                                   sawaariTableRow(
                                     title: 'Refundable Deposit',
-                                    value: '6000',
-                                  ),
-                                  sawaariTableRow(
-                                    title: 'Playable Amount',
-                                    value: '6000',
+                                    value: (_getRefundableDeposit().toInt()).toString(),
                                   ),
                                   sawaariTableRow(
                                     title:
                                         'Total Paying Amount (Inc. Refundable Deposit)',
-                                    value: '6000',
+                                    value: (_getPayableAmount().toInt()).toString(),
                                   ),
                                 ],
                               ),
@@ -210,9 +234,7 @@ class VehicleSearchCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage(
-                      image,
-                    ),
+                    image: new NetworkImage(image),
                   ),
                 ),
               ),
