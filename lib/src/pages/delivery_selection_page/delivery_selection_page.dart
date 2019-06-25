@@ -44,15 +44,15 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
 
   List<LatLng> _pickUpDropOffLatLngList = [];
 
+  //Has Pick Up data
+  bool buttonShows = false;
+
   String selectedPickupAddress;
   String selectedDropOffCity;
   String selectedDropOffAddress;
 
   // Switch
   bool _dropOffOnAnotherCitySwitch = false;
-
-  void _dropOffOnChanged(bool value) =>
-      setState(() => _dropOffOnAnotherCitySwitch = value);
 
   @override
   void initState() {
@@ -99,7 +99,7 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
     });
   }
 
-  _saveLatLngData() async{
+  _saveLatLngData() async {
     final prefs = await SharedPreferences.getInstance();
 
     prefs.setString(
@@ -124,273 +124,286 @@ class _DeliverySelectionPageState extends State<DeliverySelectionPage>
 
     final String pickupCity = ModalRoute.of(context).settings.arguments;
 
-    return SelectionScaffold(
-      city: pickupCity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'How would you like your vehicle?',
-            style: TextStyle(
-              fontSize: FontSize.fontSize18,
-            ),
-          ),
-          SizedBox(
-            height: ScreenUtil().setHeight(10),
-          ),
-          Text(
-            'Note: * Delivery will cost you more based on your location from the nearest showroom.',
-            style: TextStyle(
-              fontSize: FontSize.fontSize12,
-              color: Colors.black26,
-            ),
-          ),
-          SizedBox(
-            height: ScreenUtil().setHeight(10),
-          ),
-          Container(
-            child: TabBar(
-              labelPadding: EdgeInsets.symmetric(
-                vertical: ScreenUtil().setHeight(10),
-                horizontal: ScreenUtil().setWidth(10),
+    return  SelectionScaffold(
+        city: pickupCity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'How would you like your vehicle?',
+              style: TextStyle(
+                fontSize: FontSize.fontSize18,
               ),
-              labelColor: Colors.black54,
-              unselectedLabelColor: Colors.black38,
-              controller: tabController,
-              indicatorColor: Color(AppColors.PURPLE),
-              tabs: <Widget>[
-                Text(
-                  'Goto Showroom',
-                  style: TextStyle(
-                    fontSize: FontSize.fontSize16,
-                  ),
-                ),
-                Text(
-                  'Delivery',
-                  style: TextStyle(
-                    fontSize: FontSize.fontSize16,
-                  ),
-                )
-              ],
             ),
-          ),
-          Container(
-            height: ScreenUtil().setHeight(360),
-            child: TabBarView(
-              controller: tabController,
-              children: <Widget>[
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        height: ScreenUtil().setHeight(10),
-                      ),
-                      Text(
-                        'Pick up',
-                        style: TextStyle(
-                          fontSize: FontSize.fontSize12,
-                          color: Colors.black38,
-                        ),
-                      ),
-                      TextFormField(
-                        initialValue: '$pickupCity, Nepal',
-                        enabled: false,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.location_on),
-                        ),
-                      ),
-                      DropdownButtonFormField(
-                        hint: Text('Select Address'),
-                        value: selectedPickupAddress,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPickupAddress = value;
-                          });
-                        },
-                        items: [
-                          DropdownMenuItem(
-                            value: 'Option A',
-                            child: Text(
-                              'Option A',
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Option B',
-                            child: Text(
-                              'Option B',
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(30),
-                      ),
-                      new Column(
+            SizedBox(
+              height: ScreenUtil().setHeight(10),
+            ),
+            Text(
+              'Note: * Delivery will cost you more based on your location from the nearest showroom.',
+              style: TextStyle(
+                fontSize: FontSize.fontSize12,
+                color: Colors.black26,
+              ),
+            ),
+            SizedBox(
+              height: ScreenUtil().setHeight(10),
+            ),
+            Container(
+              child: TabBar(
+                labelPadding: EdgeInsets.symmetric(
+                  vertical: ScreenUtil().setHeight(10),
+                  horizontal: ScreenUtil().setWidth(10),
+                ),
+                labelColor: Colors.black54,
+                unselectedLabelColor: Colors.black38,
+                controller: tabController,
+                indicatorColor: Color(AppColors.PURPLE),
+                tabs: <Widget>[
+                  Text(
+                    'Goto Showroom',
+                    style: TextStyle(
+                      fontSize: FontSize.fontSize16,
+                    ),
+                  ),
+                  Text(
+                    'Delivery',
+                    style: TextStyle(
+                      fontSize: FontSize.fontSize16,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              height: ScreenUtil().setHeight(360),
+              child: TabBarView(
+                controller: tabController,
+                children: <Widget>[
+                  Container(
+                    child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          new SwitchListTile(
-                            value: _dropOffOnAnotherCitySwitch,
-                            onChanged: _dropOffOnChanged,
-                            title: new Text('Drop off in another city.',
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red)),
-                          )
-                        ],
-                      ),
-                      if (_dropOffOnAnotherCitySwitch) ...[
-                        Text(
-                          'Drop off',
-                          style: TextStyle(
-                            fontSize: FontSize.fontSize12,
-                            color: Colors.black38,
+                          SizedBox(
+                            height: ScreenUtil().setHeight(10),
                           ),
-                        ),
-                        DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.location_on),
+                          Text(
+                            'Pick up',
+                            style: TextStyle(
+                              fontSize: FontSize.fontSize12,
+                              color: Colors.black38,
+                            ),
                           ),
-                          hint: Text('Select City'),
-                          value: selectedDropOffCity,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedDropOffCity = value;
-                            });
-                          },
-                          items: [
-                            for (int i = 0; i < Cities.names.length; i++) ...[
+                          TextFormField(
+                            initialValue: '$pickupCity, Nepal',
+                            enabled: false,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.location_on),
+                            ),
+                          ),
+                          DropdownButtonFormField(
+                            hint: Text('Select Address'),
+                            value: selectedPickupAddress,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPickupAddress = value;
+                                buttonShows = true;
+                              });
+                            },
+                            items: [
                               DropdownMenuItem(
-                                value: Cities.names[i],
+                                value: 'Option A',
                                 child: Text(
-                                  Cities.names[i],
+                                  'Option A',
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Option B',
+                                child: Text(
+                                  'Option B',
                                 ),
                               ),
                             ],
-                          ],
-                        ),
-                        DropdownButtonFormField(
-                          hint: Text('Select Address'),
-                          value: selectedDropOffAddress,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedDropOffAddress = value;
-                            });
-                          },
-                          items: [
-                            DropdownMenuItem(
-                              value: 'Option A',
-                              child: Text(
-                                'Option A',
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Option B',
-                              child: Text(
-                                'Option B',
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(30),
-                        ),
-                      ],
-                      Center(
-                        child: RaisedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(
-                              AppRoutes.SEARCH_RESULTS_PAGE,
-                            );
-                          },
-                          color: Colors.lime,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(10),
-                            ),
-                            child: Text(
-                              'Next',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: FontSize.fontSize14,
-                              ),
-                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Stack(
-                  children: <Widget>[
-                    FlutterMap(
-                      options: new MapOptions(
-                        center: new LatLng(27.7083355, 85.3131555),
-                        zoom: 13.0,
-                        onTap: (LatLng point) {
-                          _handleTap(point, context);
-                        },
-                      ),
-                      layers: [
-                        new TileLayerOptions(
-                          urlTemplate: "https://api.tiles.mapbox.com/v4/"
-                              "{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}",
-                          additionalOptions: {
-                            'accessToken':
-                                'pk.eyJ1IjoiY2hlZW5hIiwiYSI6ImNqeGJybnhkOTA0Yjgzb2xlbDR4cHltOXoifQ.FsoA7drMITgYoFrhAnLtQw',
-                            'id': 'mapbox.streets',
-                          },
-                        ),
-                        new MarkerLayerOptions(
-                          markers: _mapMarkers,
-                        ),
-                      ],
-                    ),
-                    Container(
-                      child: Center(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 40,
-                            child: RaisedButton.icon(
-                                icon: Icon(
-                                  _buttonIconList[_tapCount],
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
+                          SizedBox(
+                            height: ScreenUtil().setHeight(30),
+                          ),
+                          new Column(
+                            children: <Widget>[
+                              new SwitchListTile(
+                                value: _dropOffOnAnotherCitySwitch,
+                                onChanged: (bool value) {
                                   setState(() {
-                                    if (_tapCount == 3) {
-                                      Navigator.of(context).pushNamed(
-                                        AppRoutes.SEARCH_RESULTS_PAGE,
-                                      );
-                                      _saveLatLngData();
-                                    }
-                                    if (_tapCount != 3) {
-                                      _tapCount++;
-                                    }
-                                    print(_tapCount);
+                                    _dropOffOnAnotherCitySwitch = value;
+                                    buttonShows = false;
                                   });
                                 },
-                                label: Text(
-                                  _textList[_tapCount],
-                                  style: TextStyle(color: Colors.white),
+                                title: new Text('Drop off in another city.',
+                                    style: new TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red)),
+                              )
+                            ],
+                          ),
+                          if (_dropOffOnAnotherCitySwitch) ...[
+                            Text(
+                              'Drop off',
+                              style: TextStyle(
+                                fontSize: FontSize.fontSize12,
+                                color: Colors.black38,
+                              ),
+                            ),
+                            DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.location_on),
+                              ),
+                              hint: Text('Select City'),
+                              value: selectedDropOffCity,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedDropOffCity = value;
+                                });
+                              },
+                              items: [
+                                for (int i = 0;
+                                    i < Cities.names.length;
+                                    i++) ...[
+                                  DropdownMenuItem(
+                                    value: Cities.names[i],
+                                    child: Text(
+                                      Cities.names[i],
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            DropdownButtonFormField(
+                              hint: Text('Select Address'),
+                              value: selectedDropOffAddress,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedDropOffAddress = value;
+                                  buttonShows = true;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: 'Option A',
+                                  child: Text(
+                                    'Option A',
+                                  ),
                                 ),
-                                color: _buttonBackgroundColorsList[_tapCount]),
+                                DropdownMenuItem(
+                                  value: 'Option B',
+                                  child: Text(
+                                    'Option B',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(30),
+                            ),
+                          ],
+                          if (buttonShows) ...[
+                            Center(
+                              child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                    AppRoutes.SEARCH_RESULTS_PAGE,
+                                  );
+                                },
+                                color: Colors.lime,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: ScreenUtil().setHeight(5),
+                                    horizontal: ScreenUtil().setWidth(10),
+                                  ),
+                                  child: Text(
+                                    'Next',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: FontSize.fontSize14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ]),
+                  ),),
+                  Stack(
+                    children: <Widget>[
+                      FlutterMap(
+                        options: new MapOptions(
+                          center: new LatLng(27.7083355, 85.3131555),
+                          zoom: 13.0,
+                          onTap: (LatLng point) {
+                            _handleTap(point, context);
+                          },
+                        ),
+                        layers: [
+                          new TileLayerOptions(
+                            urlTemplate: "https://api.tiles.mapbox.com/v4/"
+                                "{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}",
+                            additionalOptions: {
+                              'accessToken':
+                                  'pk.eyJ1IjoiY2hlZW5hIiwiYSI6ImNqeGJybnhkOTA0Yjgzb2xlbDR4cHltOXoifQ.FsoA7drMITgYoFrhAnLtQw',
+                              'id': 'mapbox.streets',
+                            },
+                          ),
+                          new MarkerLayerOptions(
+                            markers: _mapMarkers,
+                          ),
+                        ],
+                      ),
+                      Container(
+                        child: Center(
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 40,
+                              child: RaisedButton.icon(
+                                  icon: Icon(
+                                    _buttonIconList[_tapCount],
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      if (_tapCount == 3) {
+                                        Navigator.of(context).pushNamed(
+                                          AppRoutes.SEARCH_RESULTS_PAGE,
+                                        );
+                                        _saveLatLngData();
+                                      }
+                                      if (_tapCount != 3) {
+                                        _tapCount++;
+                                      }
+                                      print(_tapCount);
+                                    });
+                                  },
+                                  label: Text(
+                                    _textList[_tapCount],
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  color:
+                                      _buttonBackgroundColorsList[_tapCount]),
+                            ),
                           ),
                         ),
-                      ),
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    )
-                  ],
-                ),
-              ],
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      
     );
   }
 
