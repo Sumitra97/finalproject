@@ -21,7 +21,7 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
   Future<List> getVechiles() async {
     http.Response res =
         await http.get('http://sawaari97.pythonanywhere.com/api/vehic_cat/');
-    // print(res.body);
+    // print(res.body.length.toInt());
     return json.decode(res.body);
   }
 
@@ -83,9 +83,11 @@ class _VehicleDateSelectionpageState extends State<VehicleDateSelectionpage> {
                             child: VehicleSelectionWidget(
                               vehicle: vechile['name'],
                               image: vechile['image'],
-                              selected:
+                              selected: 
                                   selection == getVehicleType(vechile["name"]),
-                            ));
+                            )
+                            
+                          );
                       });
                 },
               ),

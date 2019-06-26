@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sawari/src/assets/assets.dart';
 import 'package:sawari/src/widgets/booking_not_complete/booking_not_complete.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:sawari/src/widgets/logo/logo.dart';
 import 'package:sawari/src/widgets/vehicle_search_card/vehicle_search_card.dart';
 
@@ -11,6 +15,21 @@ class SearchResultsPage extends StatefulWidget {
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
+  int doc;
+  Future<List> getDOc() async {
+    http.Response res =
+        await http.get('http://sawariapi.nepsify.com/api/document');
+        doc=json.decode(res.body).length;
+    print(json.decode(res.body).length);
+    return json.decode(res.body);
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDOc();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(
@@ -56,6 +75,11 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               days: 3,
               book: () {
                 // Booking function goes here
+                if(doc>0)
+                Navigator.of(context).pushNamed(
+                    AppRoutes.S
+                    
+                  );
                 showDialog(
                   context: context,
                   builder: (context) {
