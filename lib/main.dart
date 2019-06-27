@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sawari/src/assets/routes.dart';
+import 'package:sawari/src/pages/checkout_summary/checkout_summary.dart';
 import 'package:sawari/src/pages/delivery_selection_page/delivery_selection_page.dart';
 import 'package:sawari/src/pages/getting_started/getting_started.dart';
 import 'package:sawari/src/pages/gps_page/gps_page.dart';
@@ -30,6 +31,7 @@ class SawariApp extends StatelessWidget {
         AppRoutes.DELIVERY_SELECTION_PAGE: (context) => DeliverySelectionPage(),
         AppRoutes.SEARCH_RESULTS_PAGE: (context) => SearchResultsPage(),
         AppRoutes.GPS_PAGE: (context) => GPSPage(),
+        AppRoutes.CHECKOUT_SUMMARY: (context) => CheckoutSummary(),
         AppRoutes.PROFILE: (context) => ProfilesPage(),
       },
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sawari/src/assets/assets.dart';
-import 'package:sawari/src/widgets/card-widget/card-widget.dart';
+
+import 'package:sawari/src/widgets/card_widget/card-widget.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CheckoutSummary extends StatefulWidget {
@@ -553,4 +555,6 @@ class _CheckoutSummaryState extends State<CheckoutSummary> {
       ),
     );
   }
+
 }
+

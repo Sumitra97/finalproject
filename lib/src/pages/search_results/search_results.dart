@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:sawari/src/widgets/logo/logo.dart';
 import 'package:sawari/src/widgets/vehicle_search_card/vehicle_search_card.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchResultsPage extends StatefulWidget {
   @override
@@ -16,6 +18,7 @@ class SearchResultsPage extends StatefulWidget {
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
+
   int doc;
   Future<List> getDOc() async {
     http.Response res =
@@ -34,6 +37,11 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    setState(() {
+     _getHoursRentedData(); 
+    });
+    _getVehicleInformation();
     ScreenUtil.instance = ScreenUtil(
       width: ScreenSize.screenWidth,
       height: ScreenSize.screenHeight,
@@ -65,26 +73,35 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           right: ScreenUtil().setHeight(20),
           top: ScreenUtil().setHeight(5),
         ),
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          itemCount: 8,
-          itemBuilder: (context, index) {
-            return VehicleSearchCard(
-              image: Images.mahindra,
-              consumption: 10.4,
-              name: 'Mahindra KUV 100',
-              price: '10,000',
-              days: 3,
-              book: () {
-                // Booking function goes here
-                if (doc > 0)
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CheckoutSummary()));
-                      else
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return BookingNotComplete();
+
+        child: FutureBuilder(
+          future: _getVehicleInformation(),
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            if (!snapshot.hasData)
+              return Center(child: CircularProgressIndicator());
+
+            List vehicles = snapshot.data;
+
+            return ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: vehicles.length,
+              itemBuilder: (context, index) {
+                var vehicle = vehicles[index];
+                return VehicleSearchCard(
+                  image: vehicle["image"],
+                  consumption: double.parse(vehicle["consumption"]),
+                  name: vehicle["status"],
+                  price: vehicle["perHrPrice"],
+                  hours: 24,
+                  book: () {
+                    // Booking function goes here
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return BookingNotComplete();
+                      },
+                    );
+
                   },
                 );
               },
@@ -93,5 +110,20 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         ),
       ),
     );
+  }
+
+  Future<List> _getVehicleInformation() async {
+    http.Response res =
+        await http.get('http://sawariapi.nepsify.com/api/vehic_type/');
+    print(res.body);
+
+    return json.decode(res.body);
+  }
+
+  _getHoursRentedData() async{
+    
+    final prefs = await SharedPreferences.getInstance();
+    hoursRented = int.parse(prefs.getString("hours_rented"));
+    return hoursRented;
   }
 }

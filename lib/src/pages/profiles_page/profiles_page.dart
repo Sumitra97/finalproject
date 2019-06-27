@@ -25,6 +25,12 @@ class _ProfilesPageState extends State<ProfilesPage>
     super.dispose();
   }
 
+  bool liscenceFrontSubmitted = false;
+  bool liscenceBackSubmitted = false;
+
+  bool citizenshipFrontSubmitted = false;
+  bool citizenshipBackSubmitted = false;
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(
@@ -32,6 +38,16 @@ class _ProfilesPageState extends State<ProfilesPage>
       height: ScreenSize.screenHeight,
       allowFontScaling: true,
     )..init(context);
+
+    _showCheckout() {
+      if (liscenceFrontSubmitted &&
+          liscenceFrontSubmitted &&
+          citizenshipBackSubmitted &&
+          citizenshipFrontSubmitted) {
+        return true;
+      }
+      return false;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -103,7 +119,7 @@ class _ProfilesPageState extends State<ProfilesPage>
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height*.55,
+            height: MediaQuery.of(context).size.height * .55,
             child: TabBarView(
               controller: controller,
               children: <Widget>[
@@ -200,55 +216,106 @@ class _ProfilesPageState extends State<ProfilesPage>
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(
-                    ScreenUtil().setWidth(10),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Driving License'),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(15),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(
+                      ScreenUtil().setWidth(10),
+                    ),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          ImageSelectionWidget(
-                            title: 'Front View',
-                            imageTitle: 'driving_license_front',
+                          Text('Driving License'),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(15),
                           ),
-                          ImageSelectionWidget(
-                            title: 'Back View',
-                            imageTitle: 'driving_license_back',
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              ImageSelectionWidget(
+                                title: 'Front View',
+                                imageTitle: 'driving_license_front',
+                                isSet: (value) {
+                                  setState(() {
+                                    if (value) {
+                                      liscenceFrontSubmitted = true;
+                                    }
+                                  });
+                                },
+                              ),
+                              ImageSelectionWidget(
+                                title: 'Back View',
+                                imageTitle: 'driving_license_back',
+                                isSet: (value) {
+                                  setState(() {
+                                    if (value) {
+                                      liscenceBackSubmitted = true;
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(20),
-                      ),
-                      Text('Citizenship Certificate'),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(15),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          ImageSelectionWidget(
-                            title: 'Front View',
-                            imageTitle: 'citizen_ship_front',
+                          SizedBox(
+                            height: ScreenUtil().setHeight(20),
                           ),
-                          ImageSelectionWidget(
-                            title: 'Back View',
-                            imageTitle: 'citizen_ship_back',
+                          Text('Citizenship Certificate'),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(15),
                           ),
-                        ],
-                      ),
-                    ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              ImageSelectionWidget(
+                                  title: 'Front View',
+                                  imageTitle: 'citizen_ship_front',
+                                  isSet: (value) {
+                                    setState(() {
+                                      if (value) {
+                                        citizenshipFrontSubmitted = true;
+                                      }
+                                    });
+                                  }),
+                              ImageSelectionWidget(
+                                  title: 'Back View',
+                                  imageTitle: 'citizen_ship_back',
+                                  isSet: (value) {
+                                    setState(() {
+                                      if (value) {
+                                        citizenshipBackSubmitted = true;
+                                      }
+                                    });
+                                  }),
+                            ],
+                          ),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(15),
+                          ),
+                          if (_showCheckout()) ...[
+                            Center(
+                              child: SizedBox(
+                                  width: double.infinity,
+                                  height: 40,
+                                  child: RaisedButton.icon(
+                                      icon: Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamed(
+                                            AppRoutes.CHECKOUT_SUMMARY);
+                                      },
+                                      label: Text(
+                                        "Go to checkout",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      color: Colors.deepPurpleAccent[400])),
+                            )
+                          ],
+                        ]),
                   ),
-                ),
+                )
               ],
             ),
           ),

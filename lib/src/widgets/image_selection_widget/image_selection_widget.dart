@@ -9,18 +9,24 @@ import 'package:image_picker/image_picker.dart';
 class ImageSelectionWidget extends StatefulWidget {
   final String title;
   final String imageTitle;
+  final Function isSet;
 
   const ImageSelectionWidget({
     Key key,
     @required this.title,
     @required this.imageTitle,
+    @required this.isSet
   }) : super(key: key);
 
   @override
-  _ImageSelectionWidgetState createState() => _ImageSelectionWidgetState();
+  _ImageSelectionWidgetState createState() => _ImageSelectionWidgetState(title,isSet);
 }
 
 class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
+  String title;
+  Function isSet;
+
+  _ImageSelectionWidgetState(this.title,this.isSet);
   SharedPreferences preferences;
   File _image;
 
@@ -49,8 +55,10 @@ class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
         _image = await ImagePicker.pickImage(
           source: ImageSource.gallery,
         );
-        if (_image != null)
+        if (_image != null){
           preferences?.setString(widget.imageTitle, _image.path);
+          isSet(true);
+        }
         print(preferences?.get(widget.imageTitle));
         setState(() {});
       },
@@ -90,7 +98,7 @@ class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
                     Icons.file_upload,
                     color: Colors.black,
                   ),
-                  Text('Front View'),
+                  Text(title),
                 ]
               : [],
         ),

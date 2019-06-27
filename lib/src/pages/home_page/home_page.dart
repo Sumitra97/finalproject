@@ -107,8 +107,7 @@ class HomePage extends StatelessWidget {
 
   Future<List> getCity() async {
     http.Response res =
-        await http.get('http://sawaari97.pythonanywhere.com/api/city/');
-    print(res.body);
+        await http.get('http://sawariapi.nepsify.com/api/city/');
     return json.decode(res.body);
   }
 

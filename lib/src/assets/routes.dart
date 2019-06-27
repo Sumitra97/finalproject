@@ -9,4 +9,5 @@ class AppRoutes {
   static const String SEARCH_RESULTS_PAGE = 'app/search-result';
   static const String GPS_PAGE = 'app/gps';
   static const String PROFILE = 'app/profile';
+  static const String CHECKOUT_SUMMARY = 'app/checkout-summary';
 }
